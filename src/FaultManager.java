@@ -29,7 +29,7 @@ public class FaultManager extends Thread {
 		if (! (action.equals("ON") || action.equals("OFF")))
 			return false;
 		key = process;
-		value = ((action.equals("ON")) ? false : true);
+		value = ((!action.equals("ON")));
 		return true;
 	}
 

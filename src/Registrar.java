@@ -47,7 +47,7 @@ public class Registrar {
 		Record result = registry.put(key, record);
 		/* Synchronize */
 		tryNotify ();
-		return (result == null) ? true : false;
+		return (result == null);
 	}
 
 	public void update (Record record) {

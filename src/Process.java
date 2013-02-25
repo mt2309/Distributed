@@ -117,7 +117,7 @@ class Process {
 		}
 		if (reply == null)
 			return false;
-		return ((reply.equals("OK")) ? true : false);
+		return ((reply.equals("OK")));
 	}
 
 	private boolean write (String message) {
