@@ -3,15 +3,15 @@ import java.net.*;
 import java.util.*;
 
 class FaultInjector {
-	
+
 	public static void main (String [] args) {
-		
+
 		Socket s = null;
-		
+
 		InputStreamReader input;
 		BufferedReader b;
 		PrintWriter p;
-		
+
 		String result = null;
 
 		InputStreamReader stdin;
@@ -29,7 +29,7 @@ class FaultInjector {
 		}
 		try {
 			input = new InputStreamReader(s.getInputStream());
-			b = new BufferedReader(input);	
+			b = new BufferedReader(input);
 			p = new PrintWriter(s.getOutputStream());
 			/* This is a user-interactive program. */
 			stdin = new InputStreamReader(System.in);

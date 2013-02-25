@@ -3,20 +3,20 @@ import java.net.*;
 import java.util.*;
 
 public class FaultManager extends Thread {
-	
+
 	private Registrar r;
-	
+
 	private String key;
 	private boolean value;
-	
+
 	public FaultManager (Registrar r) {
 		this.r = r;
-		
+
 		/* Cf. this.parse(msg) */
 		key = null;
 		value = false;
 	}
-	
+
 	/* Parses `command` from a FaultInjector instance */
 	private boolean parse(String command) {
 		StringTokenizer tokens = new StringTokenizer(command, Utils.SEPARATOR);
@@ -32,16 +32,16 @@ public class FaultManager extends Thread {
 		value = ((action.equals("ON")) ? false : true);
 		return true;
 	}
-	
+
 	public void run() {
-		
+
 		ServerSocket serversocket = null;
 		Socket s;
 
 		InputStreamReader input;
 		BufferedReader b;
 		PrintWriter p;
-		
+
 		String message = null;
 		boolean done = false;
 
@@ -57,13 +57,13 @@ public class FaultManager extends Thread {
 			s = null;
 			try {
 				s = serversocket.accept();
-			
+
 			} catch (IOException e) {
 				System.err.println("Error: failed to accept connection from FaultInjector.");
 				System.err.println(e.getMessage());
 				System.exit(1);
 			}
-						
+
 			try {
 				input = new InputStreamReader(s.getInputStream());
 				b = new BufferedReader(input);
@@ -73,7 +73,7 @@ public class FaultManager extends Thread {
 					if (! parse(message)) {
 						p.println("E.g. usage: P1<|>ON; P2<|>OFF; etc.");
 						p.flush();
-						continue;			
+						continue;
 					}
 					/* Search registry */
 					Record record = r.find(key);

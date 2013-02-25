@@ -3,32 +3,32 @@ import java.net.*;
 import java.util.*;
 
 class Process {
-	
+
 	private String name; /* A triptych that identifies a process p */
 	private String host;
 	private int    port;
-	
+
 	/* A unique identifier; and the total number of process */
 	public int pid, n;
-	
+
 	/* Socket `socket` connects to the Registrar */
 	private Socket socket = null;
 	private InputStreamReader input;
 	private BufferedReader b;
-	private PrintWriter p;	
-	
+	private PrintWriter p;
+
 	/* A random number generator */
 	Random random;
-	
+
 	public Process(String name, int pid, int n) {
-		
+
 		this.name = name;
 		this.port = Utils.REGISTRAR_PORT + pid;
-		
+
 		this.host = "UNKNOWN";
 		try {
 			this.host = (InetAddress.getLocalHost()).getHostName();
-		
+
 		} catch (UnknownHostException e) {
 			String msg =
 				String.format("Error: getHostName() failed at %s.",
@@ -37,12 +37,12 @@ class Process {
 			System.err.println(e.getMessage());
 			System.exit(1);
 		}
-		
+
 		this.pid = pid;
 		this.n = n;
-		
+
 		random = new Random();
-		
+
 		/* Accepts connections from one of Registrar's worker threads */
 		new Thread (new Listener(this)).start();
 		/* Connect to registrar */
@@ -50,7 +50,7 @@ class Process {
 		init ();
 		Utils.out(pid, "Connected.");
 	}
-	
+
 	private Socket connect () {
 		Socket socket = null;
 		int attempts = 0;
@@ -73,22 +73,22 @@ class Process {
 		} while (socket == null);
 		return socket;
 	}
-	
+
 	private void init () { /* Configure I/O */
-		
+
 		if (socket != null) {
 			try {
 				input = new InputStreamReader(socket.getInputStream());
 				b = new BufferedReader(input);
 				p = new PrintWriter(socket.getOutputStream());
 
-			} catch (IOException e) { 
+			} catch (IOException e) {
 				/* Ignore for now. */
 			}
 		}
 		return ;
 	}
-	
+
 	public boolean registeR () {
 		String payload;
 		Message m;
@@ -100,13 +100,13 @@ class Process {
 			Utils.out(pid, "Registered.");
 		return result;
 	}
-	
+
 	private boolean await (String message) {
 		write(message);
 		return
 			read();
 	}
-	
+
 	private boolean read () {
 		String reply = null;
 		if (socket != null) {
@@ -119,7 +119,7 @@ class Process {
 			return false;
 		return ((reply.equals("OK")) ? true : false);
 	}
-	
+
 	private boolean write (String message) {
 		if (socket != null) {
 			p.println(message);
@@ -127,25 +127,25 @@ class Process {
 		}
 		return true;
 	}
-	
+
 	public int    getPort () { return port; }
 	public String getName () { return name; }
 	public String getHost () { return host; }
-	
+
 	public int getPid () { return pid; }
 	public int getNo  () { return   n; }
-	
+
 	public String getInfo() {
 		String s = null;
 		s = String.format("%s at %s:%d", name, host, port);
 		return s;
 	}
-	
+
 	public synchronized void receive (Message m) {
 
 		Utils.out(pid, m.toString()); /* The default action. */
 	}
-	
+
 	public boolean unicast (Message m) {
 		boolean drop = false;
 		drop = (m.getDestination() == pid && ! Utils.SELFMSGENABLED);
@@ -153,7 +153,7 @@ class Process {
 			return await(m.pack()); /* write(m.pack()); */
 		return false;
 	}
-	
+
 	public void broadcast (String type, String payload) {
 		Message m = new Message();
 		m.setSource(pid);

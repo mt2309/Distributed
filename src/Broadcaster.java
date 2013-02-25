@@ -1,28 +1,28 @@
 import java.lang.Math;
 
 class Broadcaster extends Process {
-	
+
 	private long times, count = 0;
-	
+
 	private long _t_recv, _t_send;
 	private long delay;
 	private double delaysquared;
 
 	public Broadcaster (String name, int pid, int n) {
-		
+
 		super(name, pid, n);
-		
+
 		/* Initialise this object's members */
 		count = 0;
 		times = 0;
-		
+
 		_t_recv = 0;
 		_t_send = 0;
 		/* Init delay */
 		delay = 0;
 		delaysquared = 0.0;
 	}
-	
+
 	private void begin () {
 		long t__send, dt;
 		double rate;
@@ -41,7 +41,7 @@ class Broadcaster extends Process {
 			}
 		}
 	}
-	
+
 	public synchronized void receive (Message m) {
 		long t__recv, dt;
 		double rate;
@@ -74,7 +74,7 @@ class Broadcaster extends Process {
 			delaysquared = 0.0;
 		}
 	}
-	
+
 	public static void main(String [] args) {
 		String name = args[0];
 		int pid = Integer.parseInt(args[1]);

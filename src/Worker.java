@@ -8,12 +8,12 @@ public class Worker extends Thread {
 	private Socket s;
 	private Registrar r;
 	private int myprocess;
-	
+
 	/* Random delay generator */
 	Random random;
 	private static final double mean = (double) Utils.DELAY;
 	private static final double stdv = mean / 2.0;
-	
+
 	/* Throughput measurements */
 	private long count;
 	private long _t_recv;
@@ -23,24 +23,24 @@ public class Worker extends Thread {
 		this.r = r;
 
 		myprocess = Utils.INFINITY;
-		
+
 		random = new Random();
-		
+
 		count = 0;
 	}
-	
+
 	private void unicast (Message m, int delay) {
-		
+
 		int src = m.getSource();
 		int dst = m.getDestination();
-		
+
 		Record source = r.find (src);
 		Record destination = r.find (dst);
-		
+
 		if ((source == null) || (destination == null)) {
 			/* In this unlikely event. */
 			String msg =
-				String.format("Error: link <P%d, P%d> does not exist.", 
+				String.format("Error: link <P%d, P%d> does not exist.",
 			src, dst);
 			System.err.println(msg);
 			System.exit(1);
@@ -59,7 +59,7 @@ public class Worker extends Thread {
 		}
 		return ;
 	}
-	
+
 	private int getDelay () {
 		int d;
 		double x;
@@ -75,7 +75,7 @@ public class Worker extends Thread {
 			d = Utils.DELAY;
 		return d;
 	}
-	
+
 	private void deliver (Message m) {
 		int source = m.getSource();
 		int destination = m.getDestination();
@@ -95,22 +95,22 @@ public class Worker extends Thread {
 					delay = getDelay();
 					first = false;
 				} else delay = -1;
-				
+
 				m.setDestination(i);
 				unicast(m, delay);
 			}
 		}
 	}
-	
+
 	public void run() {
-		
+
 		InputStreamReader input;
 		BufferedReader b;
 		PrintWriter p;
-		
+
 		String message, reply;
 		boolean result;
-		
+
 		long t__recv, dt;
 		double rate;
 
@@ -118,15 +118,15 @@ public class Worker extends Thread {
 			input = new InputStreamReader(s.getInputStream());
 			b = new BufferedReader(input);
 			p = new PrintWriter(s.getOutputStream());
-			
+
 			while ((message = b.readLine()) != null) {
-				
+
 				Message m = Message.parse(message);
-				
-				if (m.getDestination() == r.pid) { 
+
+				if (m.getDestination() == r.pid) {
 					myprocess = m.getSource();
-					/* 
-					 * Note that a process that registers blocks 
+					/*
+					 * Note that a process that registers blocks
 					 * until all other processes have registered.
 					 */
 					String payload = m.getPayload();
@@ -149,12 +149,12 @@ public class Worker extends Thread {
 					reply = (result ? "OK" : "ERR");
 					p.println(reply);
 					p.flush();
-					
+
 					/* Yield the processor; allow other threads to be notified. */
 					Thread.yield();
-				
+
 				} else { /* Relay message. */
-					
+
 					count += 1;
 					if (count == 1)
 						_t_recv = System.currentTimeMillis();
@@ -181,34 +181,34 @@ public class Worker extends Thread {
 			System.exit(1);
 		}
 	}
-	
+
 	class MessageHandler extends Thread { /* Again, once per process... */
-		
+
 		private Socket socket;
-		
+
 		private InputStreamReader input;
 		private BufferedReader b;
 		private PrintWriter p;
-		
+
 		private String name;
 		private String host;
 		private int    port;
 
 		private BlockingQueue<String> queue;
-		
+
 		public MessageHandler(Record record) {
 			name = record.getName();
 			host = record.getHost();
 			port = record.getPort();
 			queue = record.getQueue();
 		}
-		
+
 		private String getInfo () {
 			String s = null;
 			s = String.format("[%s at %s:%d]", name, host, port);
-			return s;	
+			return s;
 		}
-		
+
 		private Socket connect () {
 			Socket s = null;
 			int attempts = 0;
@@ -232,19 +232,19 @@ public class Worker extends Thread {
 			} while (s == null);
 			return s;
 		}
-		
+
 		private void init () { /* Configure I/O */
 			try {
 				input = new InputStreamReader(socket.getInputStream());
 				b = new BufferedReader(input);
 				p = new PrintWriter(socket.getOutputStream());
 
-			} catch (IOException e) { 
+			} catch (IOException e) {
 				/* Ignore for now. */
 			}
 			return ;
 		}
-		
+
 		public void run () {
 			socket = connect();
 			init ();
@@ -256,7 +256,7 @@ public class Worker extends Thread {
 				write(message);
 			}
 		}
-		
+
 		private boolean write (String message) {
 			p.println(message);
 			p.flush();
