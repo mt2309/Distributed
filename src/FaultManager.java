@@ -9,7 +9,7 @@ public class FaultManager extends Thread {
     private String key;
     private boolean value;
 
-    public FaultManager (Registrar r) {
+    public FaultManager(Registrar r) {
         this.r = r;
 
         /* Cf. this.parse(msg) */
@@ -23,10 +23,10 @@ public class FaultManager extends Thread {
         if (tokens.countTokens() != 2)
             return false;
         String process = tokens.nextToken();
-        if (! r.contains(process))
+        if (!r.contains(process))
             return false;
         String action = tokens.nextToken();
-        if (! (action.equals("ON") || action.equals("OFF")))
+        if (!(action.equals("ON") || action.equals("OFF")))
             return false;
         key = process;
         value = ((!action.equals("ON")));
@@ -53,7 +53,7 @@ public class FaultManager extends Thread {
             System.err.println(e.getMessage());
             System.exit(1);
         }
-        while (! done) {
+        while (!done) {
             s = null;
             try {
                 s = serversocket.accept();
@@ -70,7 +70,7 @@ public class FaultManager extends Thread {
                 p = new PrintWriter(s.getOutputStream());
                 while ((message = b.readLine()) != null) {
                     /* Handle FaultInjector's command */
-                    if (! parse(message)) {
+                    if (!parse(message)) {
                         p.println("E.g. usage: P1<|>ON; P2<|>OFF; etc.");
                         p.flush();
                         continue;

@@ -8,7 +8,7 @@ class Broadcaster extends Process {
     private long delay;
     private double delaysquared;
 
-    public Broadcaster (String name, int pid, int n) {
+    public Broadcaster(String name, int pid, int n) {
 
         super(name, pid, n);
 
@@ -23,7 +23,7 @@ class Broadcaster extends Process {
         delaysquared = 0.0;
     }
 
-    private void begin () {
+    private void begin() {
         long t__send, dt;
         double rate;
         _t_send = System.currentTimeMillis();
@@ -42,7 +42,7 @@ class Broadcaster extends Process {
         }
     }
 
-    public synchronized void receive (Message m) {
+    public synchronized void receive(Message m) {
         long t__recv, dt;
         double rate;
         long d;
@@ -65,7 +65,7 @@ class Broadcaster extends Process {
             average = (double) delay / (double) Utils.STEP;
             /* Calculate std deviation */
             deviation = Math.sqrt(
-                (delaysquared - (double) (delay * delay) / (double) Utils.STEP) / (double) (Utils.STEP - 1)
+                    (delaysquared - (double) (delay * delay) / (double) Utils.STEP) / (double) (Utils.STEP - 1)
             );
             Utils.out(pid, String.format("[RECV] %06d\trate %10.1f m/s\tavg. delay %10.1f\tstddev %10.1f", count, rate, average, deviation));
             _t_recv = t__recv;
@@ -75,13 +75,13 @@ class Broadcaster extends Process {
         }
     }
 
-    public static void main(String [] args) {
+    public static void main(String[] args) {
         String name = args[0];
         int pid = Integer.parseInt(args[1]);
         int n = Integer.parseInt(args[2]);
         Broadcaster P = new Broadcaster(name, pid, n);
         /* Don't forget to register! */
-        P.registeR ();
-        P.begin ();
+        P.registeR();
+        P.begin();
     }
 }

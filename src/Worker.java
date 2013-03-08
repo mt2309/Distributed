@@ -29,38 +29,40 @@ public class Worker extends Thread {
         count = 0;
     }
 
-    private void unicast (Message m, int delay) {
+    private void unicast(Message m, int delay) {
 
         int src = m.getSource();
         int dst = m.getDestination();
 
-        Record source = r.find (src);
-        Record destination = r.find (dst);
+        Record source = r.find(src);
+        Record destination = r.find(dst);
 
         if ((source == null) || (destination == null)) {
             /* In this unlikely event. */
             String msg =
-                String.format("Error: link <P%d, P%d> does not exist.",
-            src, dst);
+                    String.format("Error: link <P%d, P%d> does not exist.",
+                            src, dst);
             System.err.println(msg);
             System.exit(1);
         }
 
         /* Utils.out(r.pid, String.format("%s > %s", source, destination)); */
-        if (! source.isFaulty() && ! destination.isFaulty()) {
+        if (!source.isFaulty() && !destination.isFaulty()) {
             if (delay >= 0) {
                 try {
                     Thread.sleep(delay);
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException ignored) {
+                }
             }
             try {
                 destination.getQueue().put(m.pack());
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
         }
-        return ;
+        return;
     }
 
-    private int getDelay () {
+    private int getDelay() {
         int d;
         double x;
         int y;
@@ -76,7 +78,7 @@ public class Worker extends Thread {
         return d;
     }
 
-    private void deliver (Message m) {
+    private void deliver(Message m) {
         int source = m.getSource();
         int destination = m.getDestination();
         if (destination != -1) {
@@ -137,13 +139,14 @@ public class Worker extends Thread {
                     int port = Integer.parseInt(tokens.nextToken());
                     Record record = new Record(name, host, port);
                     new Thread(new MessageHandler(record)).start();
-                    result = r.registeR (record);
+                    result = r.registeR(record);
                     /* Synchronise P(i), for all i. */
                     synchronized (r.getLock()) {
-                        while (! r.areRegistered()) {
+                        while (!r.areRegistered()) {
                             try {
                                 r.getLock().wait();
-                            } catch (InterruptedException ignored) {}
+                            } catch (InterruptedException ignored) {
+                            }
                         }
                     }
                     reply = (result ? "OK" : "ERR");
@@ -165,7 +168,7 @@ public class Worker extends Thread {
                         Utils.out(r.pid, String.format("[W %03d][RECV] %06d\t%10.1f", myprocess, count, rate));
                         _t_recv = t__recv;
                     }
-                    deliver (m);
+                    deliver(m);
                     /* Assumes always correct. */
                     p.println("OK");
                     p.flush();
@@ -192,7 +195,7 @@ public class Worker extends Thread {
 
         private String name;
         private String host;
-        private int    port;
+        private int port;
 
         private BlockingQueue<String> queue;
 
@@ -203,17 +206,17 @@ public class Worker extends Thread {
             queue = record.getQueue();
         }
 
-        private String getInfo () {
+        private String getInfo() {
             String s = null;
             s = String.format("[%s at %s:%d]", name, host, port);
             return s;
         }
 
-        private Socket connect () {
+        private Socket connect() {
             Socket s = null;
             int attempts = 0;
             do {
-                attempts ++;
+                attempts++;
                 try {
                     s = new Socket(host, port);
                     s.setKeepAlive(true);
@@ -221,19 +224,20 @@ public class Worker extends Thread {
 
                 } catch (Exception e) {
                     String msg =
-                        String.format("Warning: connection attempt %d to %s failed.",
-                    attempts, getInfo());
+                            String.format("Warning: connection attempt %d to %s failed.",
+                                    attempts, getInfo());
                     System.err.println(msg);
                     System.err.println(e.getMessage());
                     try {
                         Thread.sleep(random.nextInt(100) + 1); /* [0..100] + 1 > 0.*/
-                    } catch (InterruptedException ignored) {}
+                    } catch (InterruptedException ignored) {
+                    }
                 }
             } while (s == null);
             return s;
         }
 
-        private void init () { /* Configure I/O */
+        private void init() { /* Configure I/O */
             try {
                 input = new InputStreamReader(socket.getInputStream());
                 b = new BufferedReader(input);
@@ -242,22 +246,23 @@ public class Worker extends Thread {
             } catch (IOException e) {
                 /* Ignore for now. */
             }
-            return ;
+            return;
         }
 
-        public void run () {
+        public void run() {
             socket = connect();
-            init ();
-            for (;;) {
+            init();
+            for (; ; ) {
                 String message = null;
                 try {
                     message = queue.take();
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException ignored) {
+                }
                 write(message);
             }
         }
 
-        private boolean write (String message) {
+        private boolean write(String message) {
             p.println(message);
             p.flush();
             return true;

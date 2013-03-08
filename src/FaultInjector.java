@@ -4,7 +4,7 @@ import java.util.*;
 
 class FaultInjector {
 
-    public static void main (String [] args) {
+    public static void main(String[] args) {
 
         Socket s = null;
 
@@ -15,7 +15,7 @@ class FaultInjector {
         String result = null;
 
         InputStreamReader stdin;
-        BufferedReader  console;
+        BufferedReader console;
 
         String line = null;
         try {

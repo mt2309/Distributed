@@ -7,7 +7,7 @@ public class Listener extends Thread {
     /* The process this listener is belonging */
     private Process process;
 
-    public Listener (Process process) {
+    public Listener(Process process) {
         this.process = process;
     }
 
@@ -27,21 +27,21 @@ public class Listener extends Thread {
 
         } catch (IOException e) {
             String msg =
-                String.format("Error: failed to launch Listener at %s.",
-            process.getInfo());
+                    String.format("Error: failed to launch Listener at %s.",
+                            process.getInfo());
             System.err.println(msg);
             System.err.println(e.getMessage());
             System.exit(1);
         }
 
-        while (! done) {
+        while (!done) {
             s = null;
             try {
                 s = serversocket.accept();
             } catch (IOException e) {
                 String msg =
-                    String.format("Error: failed to accept connection at %s.",
-                process.getInfo());
+                        String.format("Error: failed to accept connection at %s.",
+                                process.getInfo());
                 System.err.println(msg);
                 System.err.println(e.getMessage());
                 System.exit(1);
@@ -50,7 +50,7 @@ public class Listener extends Thread {
             try {
                 input = new InputStreamReader(s.getInputStream());
                 b = new BufferedReader(input);
-                while((message = b.readLine()) != null) {
+                while ((message = b.readLine()) != null) {
                     Message m = Message.parse(message);
                     /* Notify process */
                     process.receive(m);
@@ -60,8 +60,8 @@ public class Listener extends Thread {
                 s.close();
             } catch (IOException e) {
                 String msg =
-                    String.format("Error: failed to read() at %s.",
-                process.getInfo());
+                        String.format("Error: failed to read() at %s.",
+                                process.getInfo());
                 System.err.println(msg);
                 System.err.println(e.getMessage());
                 System.exit(1);

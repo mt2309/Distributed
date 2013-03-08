@@ -6,7 +6,7 @@ class Process {
 
     private String name; /* A triptych that identifies a process p */
     private String host;
-    private int    port;
+    private int port;
 
     /* A unique identifier; and the total number of process */
     public int pid, n;
@@ -31,8 +31,8 @@ class Process {
 
         } catch (UnknownHostException e) {
             String msg =
-                String.format("Error: getHostName() failed at %s.",
-            this.getInfo());
+                    String.format("Error: getHostName() failed at %s.",
+                            this.getInfo());
             System.err.println(msg);
             System.err.println(e.getMessage());
             System.exit(1);
@@ -44,37 +44,38 @@ class Process {
         random = new Random();
 
         /* Accepts connections from one of Registrar's worker threads */
-        new Thread (new Listener(this)).start();
+        new Thread(new Listener(this)).start();
         /* Connect to registrar */
-        socket = connect ();
-        init ();
+        socket = connect();
+        init();
         Utils.out(pid, "Connected.");
     }
 
-    private Socket connect () {
+    private Socket connect() {
         Socket socket = null;
         int attempts = 0;
         do {
-            attempts ++;
+            attempts++;
             try {
                 socket = new Socket(Utils.REGISTRAR_ADDR, Utils.REGISTRAR_PORT);
                 socket.setKeepAlive(true);
                 socket.setSoTimeout(0);
             } catch (Exception e) {
                 String msg =
-                    String.format("Warning: connection attempt %d failed at %s.",
-                attempts, this.getInfo());
+                        String.format("Warning: connection attempt %d failed at %s.",
+                                attempts, this.getInfo());
                 System.err.println(msg);
                 System.err.println(e.getMessage());
                 try {
                     Thread.sleep(random.nextInt(100) + 1); /* [0..100] + 1 > 0. */
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException ignored) {
+                }
             }
         } while (socket == null);
         return socket;
     }
 
-    private void init () { /* Configure I/O */
+    private void init() { /* Configure I/O */
 
         if (socket != null) {
             try {
@@ -86,10 +87,10 @@ class Process {
                 /* Ignore for now. */
             }
         }
-        return ;
+        return;
     }
 
-    public boolean registeR () {
+    public boolean registeR() {
         String payload;
         Message m;
         boolean result;
@@ -101,26 +102,27 @@ class Process {
         return result;
     }
 
-    private boolean await (String message) {
+    private boolean await(String message) {
         write(message);
         return
-            read();
+                read();
     }
 
-    private boolean read () {
+    private boolean read() {
         String reply = null;
         if (socket != null) {
             try {
                 /* Await reply */
                 reply = b.readLine();
-            } catch (IOException ignored) {}
+            } catch (IOException ignored) {
+            }
         }
         if (reply == null)
             return false;
         return ((reply.equals("OK")));
     }
 
-    private boolean write (String message) {
+    private boolean write(String message) {
         if (socket != null) {
             p.println(message);
             p.flush();
@@ -128,12 +130,25 @@ class Process {
         return true;
     }
 
-    public int    getPort () { return port; }
-    public String getName () { return name; }
-    public String getHost () { return host; }
+    public int getPort() {
+        return port;
+    }
 
-    public int getPid () { return pid; }
-    public int getNo  () { return   n; }
+    public String getName() {
+        return name;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public int getPid() {
+        return pid;
+    }
+
+    public int getNo() {
+        return n;
+    }
 
     public String getInfo() {
         String s = null;
@@ -141,20 +156,20 @@ class Process {
         return s;
     }
 
-    public synchronized void receive (Message m) {
+    public synchronized void receive(Message m) {
 
         Utils.out(pid, m.toString()); /* The default action. */
     }
 
-    public boolean unicast (Message m) {
+    public boolean unicast(Message m) {
         boolean drop = false;
-        drop = (m.getDestination() == pid && ! Utils.SELFMSGENABLED);
-        if (! drop)
+        drop = (m.getDestination() == pid && !Utils.SELFMSGENABLED);
+        if (!drop)
             return await(m.pack()); /* write(m.pack()); */
         return false;
     }
 
-    public void broadcast (String type, String payload) {
+    public void broadcast(String type, String payload) {
         Message m = new Message();
         m.setSource(pid);
         m.setDestination(-1); /* Cf. Worker.deliver() */

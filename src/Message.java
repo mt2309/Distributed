@@ -7,56 +7,57 @@ public class Message {
     private String type; /* Message type */
     private String payload;
 
-    public Message (int source, int destination, String type, String payload) {
+    public Message(int source, int destination, String type, String payload) {
         this.source = source;
         this.destination = destination;
         this.type = type;
         this.payload = payload;
     }
 
-    public Message () {
+    public Message() {
         source = Utils.INFINITY;
         destination = Utils.INFINITY;
         type = null;
         payload = null;
     }
 
-    public Message (Message m) {
+    public Message(Message m) {
         this(m.getSource(), m.getDestination(), m.getType(), m.getPayload());
     }
 
-    public int getSource () {
+    public int getSource() {
         return source;
     }
-    public int getDestination () {
+
+    public int getDestination() {
         return destination;
     }
 
-    public String getType () {
+    public String getType() {
         return type;
     }
 
-    public String getPayload () {
+    public String getPayload() {
         return payload;
     }
 
-    public void setSource (int source) {
+    public void setSource(int source) {
         this.source = source;
     }
 
-    public void setDestination (int destination) {
+    public void setDestination(int destination) {
         this.destination = destination;
     }
 
-    public void setType (String type) {
+    public void setType(String type) {
         this.type = type;
     }
 
-    public void setPayload (String payload) {
+    public void setPayload(String payload) {
         this.payload = payload;
     }
 
-    public static Message parse (String msg) {
+    public static Message parse(String msg) {
         StringTokenizer tokens = new StringTokenizer(msg, Utils.SEPARATOR);
         int s = Integer.parseInt(tokens.nextToken());
         int d = Integer.parseInt(tokens.nextToken());
@@ -65,25 +66,25 @@ public class Message {
         return new Message(s, d, t, p);
     }
 
-    public String pack () {
+    public String pack() {
         String s =
-            String.format("%d",      source) + Utils.SEPARATOR +
-            String.format("%d", destination) + Utils.SEPARATOR +
-            String.format("%s",        type) + Utils.SEPARATOR +
-            String.format("%s",     payload) + Utils.SEPARATOR ;
+                String.format("%d", source) + Utils.SEPARATOR +
+                        String.format("%d", destination) + Utils.SEPARATOR +
+                        String.format("%s", type) + Utils.SEPARATOR +
+                        String.format("%s", payload) + Utils.SEPARATOR;
         return s;
     }
 
-    public String toString () { /* Just prettier than pack() */
+    public String toString() { /* Just prettier than pack() */
         String s =
-            String.format("%03d",      source) + Utils.SEPARATOR +
-            String.format("%03d", destination) + Utils.SEPARATOR +
-            String.format("%s"  ,        type) + Utils.SEPARATOR +
-            String.format("%s"  ,     payload) + Utils.SEPARATOR ;
+                String.format("%03d", source) + Utils.SEPARATOR +
+                        String.format("%03d", destination) + Utils.SEPARATOR +
+                        String.format("%s", type) + Utils.SEPARATOR +
+                        String.format("%s", payload) + Utils.SEPARATOR;
         return s;
     }
 
-    public static void main (String [] args) {
+    public static void main(String[] args) {
         String s = "0<|>0<|><|><|>";
         Message m = Message.parse(s);
         System.out.println(m);

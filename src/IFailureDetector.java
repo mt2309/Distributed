@@ -1,7 +1,7 @@
 interface IFailureDetector {
 
     /* Initiates communication tasks, e.g. sending heartbeats periodically */
-    void begin ();
+    void begin();
 
     /* Handles in-coming (heartbeat) messages */
     void receive(Message m);
