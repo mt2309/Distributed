@@ -15,8 +15,6 @@ abstract class AbstractFailureDetector implements IFailureDetector {
     LinkedList<Integer> seen;
     Timer t;
 
-    int delay;
-
     static final int SECOND = 1000;
     int count = 0;
 
@@ -25,7 +23,7 @@ abstract class AbstractFailureDetector implements IFailureDetector {
             p.broadcast("heartbeat","null");
 
             // Every 3 average delays
-            if ((count + 1) % (Utils.DELAY*3) == 0) {
+            if ((count + 1) % delay() == 0) {
 
                 for (int i = 0; i < p.getNo(); i++) {
                     if (!seen.contains(i)) {
@@ -86,4 +84,6 @@ abstract class AbstractFailureDetector implements IFailureDetector {
     public void isSuspected(Integer process) {
 
     }
+
+    abstract int delay();
 }

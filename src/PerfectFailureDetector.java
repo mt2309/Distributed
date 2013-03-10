@@ -7,6 +7,9 @@ public class PerfectFailureDetector extends AbstractFailureDetector {
 
     public PerfectFailureDetector(Process p) {
         super(p);
-        delay = Utils.DELAY*3;
+    }
+
+    int delay() {
+        return SECOND + Utils.DELAY;
     }
 }

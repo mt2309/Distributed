@@ -7,6 +7,10 @@ public class EventuallyPerfectFailureDetector extends AbstractFailureDetector {
 
     public EventuallyPerfectFailureDetector(Process p) {
         super(p);
-        delay = Utils.DELAY;
+    }
+
+    @Override
+    int delay() {
+        return 3 * Utils.DELAY;
     }
 }
