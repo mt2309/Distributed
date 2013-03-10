@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -11,13 +12,28 @@ public class PerfectFailureDetector implements IFailureDetector {
 
     Process p;
     LinkedList<Integer> suspects;
+    LinkedList<Integer> seen;
     Timer t;
 
     static final int SECOND = 1000;
+    int count = 0;
 
     final class PeriodicTask extends TimerTask {
         public void run() {
             p.broadcast("heartbeat","null");
+
+            // Every 3 average delays
+            if ((count + 1) % (Utils.DELAY*3) == 0) {
+
+                for (int i = 0; i < p.getNo(); i++) {
+                    if (!seen.contains(i)) {
+                        suspects.add(i);
+                    }
+                }
+                resetProcessArray();
+            }
+
+            count++;
         }
     }
 
@@ -25,15 +41,32 @@ public class PerfectFailureDetector implements IFailureDetector {
         this.p = p;
         this.t = new Timer();
         suspects = new LinkedList<>();
+        resetProcessArray();
+    }
+
+    // Fill the process array with true values
+    private void resetProcessArray() {
+        seen = new LinkedList<>();
     }
 
     @Override
     public void begin() {
-        t.schedule(new PeriodicTask(),0, SECOND);
+        t.schedule(new PeriodicTask(),0 , SECOND);
     }
 
     @Override
     public void receive(Message m) {
+        // given that we passed this message through from the process iff it was a heartbeat
+        int source = m.getSource();
+        int averageDelay = Utils.DELAY;
+
+        // If we suspect this process and we get a heartbeat, its no longer suspect
+        if (suspects.contains(source)) {
+            suspects.remove(new Integer(source));
+        }
+
+        seen.add(source);
+
         Utils.out(p.pid,m.toString());
     }
 
@@ -49,6 +82,6 @@ public class PerfectFailureDetector implements IFailureDetector {
 
     @Override
     public void isSuspected(Integer process) {
-        
+
     }
 }

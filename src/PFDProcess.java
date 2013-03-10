@@ -9,7 +9,7 @@ class PFDProcess extends Process {
 
     public PFDProcess(String name, int pid, int n) {
         super(name,pid,n);
-        detector = new PerfectFailureDetector();
+        detector = new PerfectFailureDetector(this);
     }
 
     public void begin() {
