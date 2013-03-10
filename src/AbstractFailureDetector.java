@@ -22,8 +22,9 @@ abstract class AbstractFailureDetector implements IFailureDetector {
         public void run() {
             p.broadcast("heartbeat","null");
 
-            // Every 3 average delays
-            if ((count + 1) % delay() == 0) {
+            count++;
+
+            if (count % delay() == 0) {
 
                 for (int i = 0; i < p.getNo(); i++) {
                     if (!seen.contains(i)) {
@@ -32,8 +33,6 @@ abstract class AbstractFailureDetector implements IFailureDetector {
                 }
                 resetProcessArray();
             }
-
-            count++;
         }
     }
 
