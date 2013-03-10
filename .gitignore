@@ -1,5 +1,6 @@
 .idea/
 out/
+*.class
 *.err
 *.out
 report.aux
