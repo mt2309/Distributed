@@ -32,9 +32,13 @@ every process. A trivial accurate detector is one that suspect no processes.
 Clearly neither of these are very useful or interesting, and a trade-off
 between accuracy and completeness is more useful.
 
-
-
-
+A detector is strongly complete if every crashed process is eventually
+suspected by every correct process. A detector is strongly accurate if no
+correct process is ever suspected, it is weakly accurate if there is at least
+one correct process that is never suspected. A detector is eventually strongly
+accurate if it eventually no longer suspects any correct process, a detector is
+eventually weakly accurate if eventually there is a correct process that is not
+suspected. 
 
 
 
