@@ -14,9 +14,31 @@
 
 \begin{document}
 \maketitle
-%\section{}
-%\subsection{}
 
+\section{Failure detectors}
+
+Failure detectors maintain a collection of suspected processes. A suspected
+process is one that is suspected of being in a crashed state at the time the
+failure detector is evaluated.
+
+Detectors in different processes do not have to agree and detectors do not have
+to be correct, that is a detector may suspect a correct process or not suspect
+a crashed process.
+
+Detectors can be classified by their completeness and accuracy. A complete
+detector will suspect crashed processes.  An accurate detector will not detect
+correct processes. A trivial complete detector is a detector that suspects
+every process. A trivial accurate detector is one that suspect no processes.
+Clearly neither of these are very useful or interesting, and a trade-off
+between accuracy and completeness is more useful.
+
+
+
+
+
+
+
+%\subsection{}
 
 
 \end{document}  
