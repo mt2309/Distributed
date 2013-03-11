@@ -9,7 +9,8 @@ public class PerfectFailureDetector extends AbstractFailureDetector {
         super(p);
     }
 
+    // One tick, plus the average delay
     int delay() {
-        return SECOND + Utils.DELAY;
+        return PERIOD + Utils.DELAY;
     }
 }

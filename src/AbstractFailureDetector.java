@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -15,7 +14,7 @@ abstract class AbstractFailureDetector implements IFailureDetector {
     LinkedList<Integer> seen;
     Timer t;
 
-    static final int SECOND = 1000;
+    static final int PERIOD = 1000;
     int count = 0;
 
     final class PeriodicTask extends TimerTask {
@@ -50,7 +49,7 @@ abstract class AbstractFailureDetector implements IFailureDetector {
 
     @Override
     public void begin() {
-        t.schedule(new PeriodicTask(),0 , SECOND);
+        t.schedule(new PeriodicTask(),0 , PERIOD);
     }
 
     @Override

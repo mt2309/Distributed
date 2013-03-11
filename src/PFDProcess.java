@@ -3,13 +3,13 @@
  * Date: 10/03/2013
  * Time: 16:35
  */
-class PFDProcess extends Process {
+public class PFDProcess extends Process {
 
     private IFailureDetector detector;
 
     public PFDProcess(String name, int pid, int n) {
         super(name,pid,n);
-        detector = new AbstractFailureDetector(this);
+        detector = new PerfectFailureDetector(this);
     }
 
     public void begin() {
