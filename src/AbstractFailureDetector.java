@@ -1,6 +1,4 @@
-import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * User: mthorpe
@@ -10,6 +8,7 @@ import java.util.TimerTask;
 abstract class AbstractFailureDetector implements IFailureDetector {
 
     Process p;
+    Set<Integer> processes;
     LinkedList<Integer> suspects;
     LinkedList<Integer> seen;
     Timer t;
@@ -25,7 +24,7 @@ abstract class AbstractFailureDetector implements IFailureDetector {
 
             if (count % delay() == 0) {
 
-                for (int i = 0; i < p.getNo(); i++) {
+                for (Integer i : processes) {
                     if (!seen.contains(i)) {
                         suspects.add(i);
                     }
@@ -38,7 +37,8 @@ abstract class AbstractFailureDetector implements IFailureDetector {
     public AbstractFailureDetector(Process p) {
         this.p = p;
         this.t = new Timer();
-        suspects = new LinkedList<>();
+        this.suspects = new LinkedList<>();
+        this.processes = new HashSet<>(p.getNo());
         resetProcessArray();
     }
 
@@ -56,7 +56,7 @@ abstract class AbstractFailureDetector implements IFailureDetector {
     public void receive(Message m) {
         // given that we passed this message through from the process iff it was a heartbeat
         int source = m.getSource();
-        int averageDelay = Utils.DELAY;
+        processes.add(source);
 
         // If we suspect this process and we get a heartbeat, its no longer suspect
         if (suspects.contains(source)) {
