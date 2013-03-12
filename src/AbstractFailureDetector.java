@@ -8,7 +8,7 @@ import java.util.*;
 abstract class AbstractFailureDetector implements IFailureDetector {
 
     Process p;
-    Set<Integer> processes;
+    Map<Integer,Integer> processes;
     LinkedList<Integer> suspects;
     LinkedList<Integer> seen;
     Timer t;
@@ -16,34 +16,33 @@ abstract class AbstractFailureDetector implements IFailureDetector {
     static final int PERIOD = 1000;
     int count = 0;
 
-    final class PeriodicTask extends TimerTask {
+    class PeriodicTask extends TimerTask {
         public void run() {
-            p.broadcast("heartbeat","null");
+            p.broadcast("heartbeat",String.format("%d", System.currentTimeMillis()));
 
-            count++;
-
-            if (count % delay() == 0) {
-
-                for (Integer i : processes) {
+            count += PERIOD;
+            for (Integer i : processes.keySet()) {
+                if (count > delay(i)) {
                     if (!seen.contains(i)) {
                         suspects.add(i);
                     }
                 }
-                resetProcessArray();
+                resetSeenArray();
             }
         }
+
     }
 
     public AbstractFailureDetector(Process p) {
         this.p = p;
         this.t = new Timer();
         this.suspects = new LinkedList<>();
-        this.processes = new HashSet<>(p.getNo());
-        resetProcessArray();
+        this.processes = new HashMap<>(p.getNo());
+        resetSeenArray();
     }
 
     // Fill the process array with true values
-    private void resetProcessArray() {
+    private void resetSeenArray() {
         seen = new LinkedList<>();
     }
 
@@ -56,7 +55,7 @@ abstract class AbstractFailureDetector implements IFailureDetector {
     public void receive(Message m) {
         // given that we passed this message through from the process iff it was a heartbeat
         int source = m.getSource();
-        processes.add(source);
+        processes.put(source, processes.get(source) + 1);
 
         // If we suspect this process and we get a heartbeat, its no longer suspect
         if (suspects.contains(source)) {
@@ -83,5 +82,5 @@ abstract class AbstractFailureDetector implements IFailureDetector {
 
     }
 
-    abstract int delay();
+    abstract int delay(int i);
 }
