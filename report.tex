@@ -40,9 +40,16 @@ accurate if it eventually no longer suspects any correct process, a detector is
 eventually weakly accurate if eventually there is a correct process that is not
 suspected. 
 
+\section{Implementations}
+
+\subsection{Perfect failure detector}
+
+The implementation of the perfect failure detector assumes that no message is
+delayed for more than two times the average delay. As long as we wait for at
+least \emph{time between heartbeats}$ + 2 * delay$ we will never incorrectly
+suspect a process. 
 
 
-%\subsection{}
 
 
 \end{document}  
