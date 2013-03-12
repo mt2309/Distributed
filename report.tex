@@ -71,4 +71,13 @@ $S$ emulates $\diamond S$ as is is weakly accurate immediately, this is equivale
 $S$ can not emulate $\diamond P$ as $\diamond P$ is strongly accurate, which is more specific than $S$.
 $\diamond S$ can not emulate any of the others, it is the weakest failure detector.
 
+\section{Weak completeness}
+
+A system that satisfies weak completeness can be augmented to emulate strong
+completeness by sharing knowledge. That is, once a process $A$ suspects a
+process $B$ then $A$ will broadcast a message that it suspects $B$. All the
+processes receiving this message will now add $B$ to their suspected list as
+well. This spread of knowledge will eventually result in all processes
+suspecting all faulty processes.
+
 \end{document}  
