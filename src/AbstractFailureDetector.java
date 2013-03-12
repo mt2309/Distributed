@@ -8,7 +8,7 @@ import java.util.*;
 abstract class AbstractFailureDetector implements IFailureDetector {
 
     Process p;
-    Map<Integer,Integer> processes;
+    Set<Integer> processes;
     LinkedList<Integer> suspects;
     LinkedList<Integer> seen;
     Timer t;
@@ -21,7 +21,7 @@ abstract class AbstractFailureDetector implements IFailureDetector {
             p.broadcast("heartbeat",String.format("%d", System.currentTimeMillis()));
 
             count += PERIOD;
-            for (Integer i : processes.keySet()) {
+            for (Integer i : processes) {
                 if (count > delay(i)) {
                     if (!seen.contains(i)) {
                         suspects.add(i);
@@ -37,7 +37,7 @@ abstract class AbstractFailureDetector implements IFailureDetector {
         this.p = p;
         this.t = new Timer();
         this.suspects = new LinkedList<>();
-        this.processes = new HashMap<>(p.getNo());
+        this.processes = new HashSet<>(p.getNo());
         resetSeenArray();
     }
 
@@ -55,7 +55,7 @@ abstract class AbstractFailureDetector implements IFailureDetector {
     public void receive(Message m) {
         // given that we passed this message through from the process iff it was a heartbeat
         int source = m.getSource();
-        processes.put(source, processes.get(source) + 1);
+        processes.add(source);
 
         // If we suspect this process and we get a heartbeat, its no longer suspect
         if (suspects.contains(source)) {
