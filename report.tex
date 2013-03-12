@@ -46,7 +46,7 @@ suspected.
 
 The implementation of the perfect failure detector assumes that no message is
 delayed for more than two times the average delay. As long as we wait for at
-least \emph{time between heartbeats}$ + 2 * delay$ we will never incorrectly
+least $\text{time between heartbeats} + 2 * delay$ we will never incorrectly
 suspect a process. 
 
 \subsection{Eventually perfect failure detector}
@@ -55,5 +55,20 @@ The eventually perfect failure detector keeps track of the maximum delay
 between heartbeats from each process. If a process heartbeat is not received
 within two times the maximum delay tracked so far it is suspected.
 
+\section{Relationships between classes}
+
+\begin{description}
+	\item[$P$ (perfect)] Strongly complete and strongly accurate
+	\item[$S$ (strong)] Strongly complete and weakly accurate
+	\item[$\diamond P$ (eventually perfect)] Strongly complete and eventually strongly accurate
+	\item[$\diamond S$ (eventually strong)] Strongly complete and eventually weakly accurate
+\end{description}
+
+$P$ emulates $S$. 
+$\diamond P$ emulates $\diamond S$, as it is eventually strongly accurate which
+is more specific then $\diamond S$ that is only eventually weakly accurate.
+$S$ emulates $\diamond S$ as is is weakly accurate immediately, this is equivalent to $\diamond S$ eventually time being 0.
+$S$ can not emulate $\diamond P$ as $\diamond P$ is strongly accurate, which is more specific than $S$.
+$\diamond S$ can not emulate any of the others, it is the weakest failure detector.
 
 \end{document}  
