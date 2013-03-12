@@ -20,15 +20,14 @@ public class EventuallyPerfectFailureDetector extends AbstractFailureDetector {
         super.receive(m);
         int source = m.getSource();
         long delay = (System.currentTimeMillis() - Long.parseLong(m.getPayload()));
-        lastSeen.put(source, lastSeen.get(source) + delay);
+
+        if (delay > lastSeen.get(source)) {
+            lastSeen.put(source, delay);
+        }
     }
 
     @Override
     int delay(int i) {
-        return (int)(2 * average(i));
-    }
-
-    double average(int i) {
-        return (lastSeen.get(i) / processes.get(i));
+        return lastSeen.get(i).intValue();
     }
 }
