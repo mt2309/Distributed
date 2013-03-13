@@ -71,6 +71,16 @@ $S$ emulates $\diamond S$ as is is weakly accurate immediately, this is equivale
 $S$ can not emulate $\diamond P$ as $\diamond P$ is strongly accurate, which is more specific than $S$.
 $\diamond S$ can not emulate any of the others, it is the weakest failure detector.
 
+\begin{tabular}{|l|c|c|c|c|c|c|}
+\hline
+Row emulates column  & $P$ & $\diamond P$ & $S$ & $\diamond S$ \\ \hline
+$P$                  & N/A & Yes          & Yes & Yes          \\ \hline
+$\diamond P$         & No  & N/A          & No  & Yes          \\ \hline
+$S$                  & No  & No           & N/A & Yes          \\ \hline
+$\diamond S$         & No  & Yes          & No  & N/A          \\ \hline
+\end{tabular}
+
+
 \section{Weak completeness}
 
 A system that satisfies weak completeness can be augmented to emulate strong
