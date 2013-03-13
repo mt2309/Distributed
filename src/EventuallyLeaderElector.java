@@ -6,12 +6,12 @@ import java.util.Set;
  * Date: 12/03/2013
  * Time: 20:55
  */
-public class LeaderDetector extends EventuallyPerfectFailureDetector {
+public class EventuallyLeaderElector extends EventuallyPerfectFailureDetector {
 
 
     int leader;
 
-    LeaderDetector(Process process) {
+    EventuallyLeaderElector(Process process) {
         super(process);
         // leader starts off as current process
         leader = process.getPid();
