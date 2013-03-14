@@ -79,7 +79,7 @@ abstract class AbstractFailureDetector implements IFailureDetector {
 
     @Override
     public void isSuspected(Integer process) {
-
+        suspects.add(process);
     }
 
     abstract int delay(int i);
