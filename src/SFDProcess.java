@@ -32,9 +32,11 @@ public class SFDProcess extends Process {
         try {
 			Object signal = signals.get(r);
 			synchronized(signal) {
-				signal.wait();
+				while(!detector.isSuspect(r) && values.get(r) == -1)
+					signal.wait(1000);
+				}
+				return !detector.isSuspect(r);
 			}
-            return !(values.get(r) == -1);
         } catch (InterruptedException e) {
             e.printStackTrace();
             return false;
@@ -57,9 +59,9 @@ public class SFDProcess extends Process {
         if (type.equals("heartbeat")) {
             detector.receive(m);
         } else if (type.equals("consensus")) {
-			values.put(m.getSource(), Integer.parseInt(m.getPayload()));
 			Object signal = signals.get(m.getSource());
 			synchronized(signal) {
+				values.put(m.getSource(), Integer.parseInt(m.getPayload()));
 				signal.notifyAll();
 			}
         }
