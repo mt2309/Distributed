@@ -16,7 +16,7 @@ public class SFDProcess extends Process {
     Map<Integer, Object> signals;
 	Map<Integer, Integer> values;
 
-    public SFDProcess(String name, int pid, int n, String x) {
+    public SFDProcess(String name, int pid, int n) {
         super(name,pid,n);
         detector = new StrongFailureDetector(this);
         signals = new HashMap<>(this.getNo());
@@ -70,7 +70,7 @@ public class SFDProcess extends Process {
     }
 
     public static void main (String[] args) {
-        SFDProcess p = new SFDProcess("P1", 1, 2, args[3]);
+        SFDProcess p = new SFDProcess("P1", 1, 2);
         p.registeR();
         p.begin();
     }
