@@ -39,17 +39,25 @@ public class ESFDProcess extends SFDProcess {
     @Override
     public synchronized void receive(Message m) {
         String type = m.getType();
-        if (type.equals("heartbeat")) {
-            detector.receive(m);
-        } else if (type.equals("consensus")) {
-            count = new AtomicInteger(count.getAndIncrement());
-            Object signal = signals.get(m.getSource());
-            synchronized(signal) {
-                values.put(m.getSource(), Integer.parseInt(m.getPayload()));
-                signal.notifyAll();
-            }
-        } else if (type.equals("outcome")) {
+        switch (type) {
+            case "heartbeat":
+                detector.receive(m);
+                break;
+            case "consensus":
 
+                count = new AtomicInteger(count.getAndIncrement());
+
+                Object signal = signals.get(m.getSource());
+                synchronized (signal) {
+                    values.put(m.getSource(), Integer.parseInt(m.getPayload()));
+                    signal.notifyAll();
+                }
+
+
+                break;
+            case "outcome":
+
+                break;
         }
 
     }
