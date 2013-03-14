@@ -32,12 +32,14 @@ public class SFDProcess extends Process {
         try {
 			Object signal = signals.get(r);
 			synchronized(signal) {
-				while(!detector.isSuspect(r) && values.get(r) == -1)
+				while(!detector.isSuspect(r) && values.get(r) == -1) {
 					signal.wait(1000);
-				}
-				return !detector.isSuspect(r);
+                }
 			}
-        } catch (InterruptedException e) {
+
+            return !detector.isSuspect(r);
+		}
+        catch (InterruptedException e) {
             e.printStackTrace();
             return false;
         }
