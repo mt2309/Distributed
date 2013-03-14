@@ -17,7 +17,29 @@ public class ESFDProcess extends SFDProcess {
         super(name, pid, n);
         messagesReceived = 0;
         count = (getNo() - (getNo()/3));
+		
+		for (int i = 0; i < getNo(); i++ ) {
+			d_values.put(i, -1);
+			v_values.put(i, -1);
+		}
     }
+
+	private boolean collect(int r) {
+        try {
+			Object signal = signals.get(r);
+			synchronized(signal) {
+				while(!detector.isSuspect(r) && (d_values.get(r) == -1 || v_values.get(r) == -1)) {
+					signal.wait(1000);
+                }
+			}
+
+            return !detector.isSuspect(r);
+		}
+        catch (InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
+	}
 
     @Override
     public void begin() {
