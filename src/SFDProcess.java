@@ -47,13 +47,23 @@ public class SFDProcess extends Process {
 
     public void begin() {
         detector.begin();
+		int x = detector.getLeader();
         for (int i = 0; i < getNo(); i++ ) {
             if (i == pid) {
                 // send [VAL: x, r] to all processes in G
                 // we send i implicitly since,
                 this.broadcast("consensus", Integer.toString(detector.getLeader()));
             }
+			if(collect(i))
+			{
+				Object signal = signals.get(m.getSource());
+				synchronized(signal) {
+					x = values.get(i);
+				}
+			}
         }
+		
+        Utils.out(pid, String.format("Decided on %d.", x));
     }
 
     public synchronized void receive (Message m) {
