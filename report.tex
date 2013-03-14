@@ -49,11 +49,20 @@ delayed for more than two times the average delay. As long as we wait for at
 least $\text{time between heartbeats} + 2 * delay$ we will never incorrectly
 suspect a process. 
 
+If we subsequently receive a heartbeat from a process which we suspect, we remove
+it from the suspects list.
+
 \subsection{Eventually perfect failure detector}
 
 The eventually perfect failure detector keeps track of the maximum delay
 between heartbeats from each process. If a process heartbeat is not received
 within two times the maximum delay tracked so far it is suspected.
+
+\subsection{Leadership Election}
+
+We simply choose the process with the highest PID that is not suspect as the leader.
+For this we need to assume perfect communication between all processes if we want
+all (correct) processes to elect the same leader.
 
 \section{Relationships between classes}
 
