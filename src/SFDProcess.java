@@ -56,13 +56,13 @@ public class SFDProcess extends Process {
             }
 			if(collect(i))
 			{
-				Object signal = signals.get(m.getSource());
+				Object signal = signals.get(i);
 				synchronized(signal) {
 					x = values.get(i);
 				}
 			}
         }
-		
+
         Utils.out(pid, String.format("Decided on %d.", x));
     }
 
