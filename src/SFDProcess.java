@@ -13,15 +13,28 @@ public class SFDProcess extends Process {
     private IFailureDetector detector;
 
     // Map PID to received
-    Lock l;
-    Map<Integer, AtomicInteger> signals;
+    Map<Integer, Object> signals;
+	Map<Integer, Integer> values;
 
     public SFDProcess(String name, int pid, int n, String x) {
         super(name,pid,n);
         detector = new StrongFailureDetector(this);
         signals = new HashMap<>(this.getNo());
-        l = new ReentrantLock();
+		values = new HashMap<>(this.getNo());
+		
+		for (int i = 0; i < getNo(); i++ ) {
+			signals.put(i, new Object());
+			values.put(i, -1);
+		}
     }
+	
+	private boolean collect(int r) {
+		signals[r].wait();
+		if(values[r] == -1)
+			return false;
+		else
+			return true;
+	}
 
     public void begin() {
         detector.begin();
@@ -39,10 +52,8 @@ public class SFDProcess extends Process {
         if (type.equals("heartbeat")) {
             detector.receive(m);
         } else if (type.equals("consensus")) {
-            // lock the signals map
-            l.lock();
-            signals.put(m.getSource(), new AtomicInteger(Integer.parseInt(m.getPayload())));
-            l.unlock();
+			values[m.getSource()] = Integer.parseInt(m.getPayload());
+            signals[m.getSource()].notifyAll();
         }
     }
 
