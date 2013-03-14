@@ -30,7 +30,10 @@ public class SFDProcess extends Process {
 
 	private boolean collect(int r) {
         try {
-            signals.get(r).wait();
+			Object signal = signals.get(r);
+			synchronized(signal) {
+				signal.wait();
+			}
             return !(values.get(r) == -1);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -55,7 +58,10 @@ public class SFDProcess extends Process {
             detector.receive(m);
         } else if (type.equals("consensus")) {
 			values.put(m.getSource(), Integer.parseInt(m.getPayload()));
-            signals.get(m.getSource()).notifyAll();
+			Object signal = signals.get(m.getSource());
+			synchronized(signal) {
+				signal.notifyAll();
+			}
         }
     }
 
