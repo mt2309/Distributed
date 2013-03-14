@@ -1,4 +1,4 @@
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Map;
 
 /**
  * User: mthorpe
@@ -9,7 +9,7 @@ public class ESFDProcess extends SFDProcess {
 
     int messagesReceived;
     int count;
-	
+
 	Map<Integer, Integer> d_values;
 	Map<Integer, Integer> v_values;
 
@@ -17,7 +17,7 @@ public class ESFDProcess extends SFDProcess {
         super(name, pid, n);
         messagesReceived = 0;
         count = (getNo() - (getNo()/3));
-		
+
 		for (int i = 0; i < getNo(); i++ ) {
 			d_values.put(i, -1);
 			v_values.put(i, -1);
@@ -75,7 +75,7 @@ public class ESFDProcess extends SFDProcess {
             case "outcome":
                 Object signal = signals.get(m.getSource());
                 synchronized (signal) {
-					string[] vals = string.split(" ", m.getPayload());
+					String[] vals = m.getPayload().split(" ");
 					d_values.put(m.getSource(), Integer.parseInt(vals[0]));
 					v_values.put(m.getSource(), Integer.parseInt(vals[1]));
                     signal.notifyAll();
