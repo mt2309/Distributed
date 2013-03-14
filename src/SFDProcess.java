@@ -20,20 +20,22 @@ public class SFDProcess extends Process {
         super(name,pid,n);
         detector = new StrongFailureDetector(this);
         signals = new HashMap<>(this.getNo());
-		values = new HashMap<>(this.getNo());
-		
-		for (int i = 0; i < getNo(); i++ ) {
+        values = new HashMap<>(this.getNo());
+
+        for (int i = 0; i < getNo(); i++ ) {
 			signals.put(i, new Object());
 			values.put(i, -1);
 		}
     }
-	
+
 	private boolean collect(int r) {
-		signals[r].wait();
-		if(values[r] == -1)
-			return false;
-		else
-			return true;
+        try {
+            signals.get(r).wait();
+            return !(values.get(r) == -1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
 	}
 
     public void begin() {
@@ -52,8 +54,8 @@ public class SFDProcess extends Process {
         if (type.equals("heartbeat")) {
             detector.receive(m);
         } else if (type.equals("consensus")) {
-			values[m.getSource()] = Integer.parseInt(m.getPayload());
-            signals[m.getSource()].notifyAll();
+			values.put(m.getSource(), Integer.parseInt(m.getPayload()));
+            signals.get(m.getSource()).notifyAll();
         }
     }
 
