@@ -9,6 +9,9 @@ public class ESFDProcess extends SFDProcess {
 
     int messagesReceived;
     int count;
+	
+	Map<Integer, Integer> d_values;
+	Map<Integer, Integer> v_values;
 
     public ESFDProcess(String name, int pid, int n) {
         super(name, pid, n);
@@ -44,18 +47,17 @@ public class ESFDProcess extends SFDProcess {
                 detector.receive(m);
                 break;
             case "consensus":
-
-
-                Object signal = signals.get(m.getSource());
-                synchronized (signal) {
-                    count++;
-                    values.put(m.getSource(), Integer.parseInt(m.getPayload()));
-                    signal.notifyAll();
-                }
-
-
+				count++;
+                values.put(m.getSource(), Integer.parseInt(m.getPayload()));
                 break;
             case "outcome":
+                Object signal = signals.get(m.getSource());
+                synchronized (signal) {
+					string[] vals = string.split(" ", m.getPayload());
+					d_values.put(m.getSource(), Integer.parseInt(vals[0]));
+					v_values.put(m.getSource(), Integer.parseInt(vals[1]));
+                    signal.notifyAll();
+                }
 
                 break;
         }
