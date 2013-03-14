@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Time: 22:19
  */
 public class SFDProcess extends Process {
-    private IFailureDetector detector;
+    protected IFailureDetector detector;
 
     // Map PID to received
     Map<Integer, Object> signals;
