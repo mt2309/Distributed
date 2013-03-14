@@ -8,23 +8,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ESFDProcess extends SFDProcess {
 
     int messagesReceived;
-    AtomicInteger count;
+    int count;
 
     public ESFDProcess(String name, int pid, int n) {
         super(name, pid, n);
         messagesReceived = 0;
-        count = new AtomicInteger(getNo() - (getNo()/3));
+        count = (getNo() - (getNo()/3));
     }
 
     @Override
     public void begin() {
 
-        AtomicInteger r = new AtomicInteger(0);
+        int r = 0;
         int m = 0;
 
         while (true) {
-            r = new AtomicInteger(r.getAndIncrement());
-            int c = (r.get() % getNo()) + 1;
+            r++;
+            int c = (r % getNo()) + 1;
 
             Message msg = new Message(pid,c,"consensus",Integer.toString(detector.getLeader()));
             unicast(msg);
@@ -45,10 +45,10 @@ public class ESFDProcess extends SFDProcess {
                 break;
             case "consensus":
 
-                count = new AtomicInteger(count.getAndIncrement());
 
                 Object signal = signals.get(m.getSource());
                 synchronized (signal) {
+                    count++;
                     values.put(m.getSource(), Integer.parseInt(m.getPayload()));
                     signal.notifyAll();
                 }
